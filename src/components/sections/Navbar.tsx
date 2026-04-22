@@ -57,7 +57,7 @@ export function Navbar() {
       {/* right — sign-in */}
       <div className="flex items-center gap-2">
         <a
-          href="https://app.pms.risetechnosoft.com/login"
+          href="https://police.risetechnosoft.com/login"
           target="_blank"
           rel="noopener noreferrer"
           className="beam-ring glass-navy hidden items-center gap-2 rounded-full px-5 py-2.5 font-display text-sm font-medium text-white transition-colors hover:text-[#D4AF37] md:inline-flex"
@@ -88,7 +88,7 @@ export function Navbar() {
             </a>
           ))}
           <a
-            href="https://app.pms.risetechnosoft.com/login"
+            href="https://police.risetechnosoft.com/login"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setOpen(false)}
