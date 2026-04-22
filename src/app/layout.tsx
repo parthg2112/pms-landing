@@ -50,7 +50,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${spaceGrotesk.variable} ${inter.variable} ${notoHindi.variable} ${spaceMono.variable}`}
     >
-      <body className="bg-[#0A0E1A] font-body text-white antialiased">
+      <body className="font-body text-white antialiased">
+        {/* Sitewide backdrop: navy base + single gold radial, viewport-centered.
+            Fixed so it stays anchored to the viewport as the user scrolls —
+            one uniform gradient across the entire site, no competing layers. */}
+        <div className="fixed inset-0 -z-10 bg-[#0A0E1A]" aria-hidden="true">
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "radial-gradient(circle 600px at 50% 50%, rgba(212,175,55,0.3), transparent)",
+            }}
+          />
+        </div>
         <SmoothScrollProvider>
           <main className="overflow-x-clip">{children}</main>
         </SmoothScrollProvider>

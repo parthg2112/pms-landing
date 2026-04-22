@@ -321,6 +321,92 @@ body {
   .beam-ring:hover::after {
     opacity: 1;
   }
+
+  /* ----- spotlight-navbar brand tint ---------------------------------- */
+  .spotlight-nav {
+    /* the vengenceui internals read these custom props */
+    --spotlight-color: rgba(212, 175, 55, 0.28);
+    --ambience-color: rgba(212, 175, 55, 1);
+  }
+
+  .spotlight-nav-bg {
+    background: rgba(30, 58, 95, 0.2);
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  }
+
+  .spotlight-nav-shadow {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 10px 30px -12px rgba(0, 0, 0, 0.5);
+  }
+
+  .glass-border {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* ----- glass-dock brand tint ---------------------------------------- */
+  .glass-dock {
+    /* override the ui-kit defaults so it reads as command-center chrome */
+    background: rgba(20, 31, 51, 0.55) !important;
+    backdrop-filter: blur(18px) saturate(1.3);
+    -webkit-backdrop-filter: blur(18px) saturate(1.3);
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 20px 60px -20px rgba(0, 0, 0, 0.7),
+      0 0 0 1px rgba(212, 175, 55, 0.08);
+    position: relative;
+    isolation: isolate;
+  }
+  /* gold masked hairline border — matches .glass-navy family */
+  .glass-dock::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(212, 175, 55, 0.5) 0%,
+      rgba(255, 255, 255, 0.1) 30%,
+      rgba(255, 255, 255, 0) 50%,
+      rgba(255, 255, 255, 0.1) 70%,
+      rgba(212, 175, 55, 0.4) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .glass-dock svg {
+    color: rgba(255, 255, 255, 0.55);
+    transition: color 220ms var(--ease-cinema), transform 220ms var(--ease-cinema);
+  }
+  .glass-dock [role="button"]:hover svg {
+    color: #d4af37;
+  }
+}
+
+/* ----- emil-grade focus rings (keyboard only) ------------------------- */
+:where(a, button, [role="button"]):focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px #0a0e1a,
+    0 0 0 4px rgba(212, 175, 55, 0.6);
+  border-radius: 999px;
+  transition: box-shadow 160ms var(--ease-cinema);
+}
+
+/* ----- scoped cinema easing on interactive elements ------------------- */
+:where(button, a, input, select, textarea) {
+  transition-timing-function: var(--ease-cinema);
+}
+
+/* ----- tighter tracking on very large display text ------------------- */
+.tracking-display-xl {
+  letter-spacing: -0.03em;
 }
 
 /* ----- keyframes ----------------------------------------------------- */

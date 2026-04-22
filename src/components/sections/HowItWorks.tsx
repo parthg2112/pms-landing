@@ -1,23 +1,27 @@
-import { ClipboardText, VideoConference, ChartLineUp } from "@phosphor-icons/react/dist/ssr";
+import {
+  ClipboardDocumentListIcon,
+  VideoCameraIcon,
+  PresentationChartLineIcon,
+} from "@heroicons/react/24/outline";
 import { SectionBadge } from "@/components/ui/SectionBadge";
 import { AnimatedSection, AnimatedItem } from "@/components/ui/AnimatedSection";
 
 const steps = [
   {
     step: "Step 01",
-    Icon: ClipboardText,
+    Icon: ClipboardDocumentListIcon,
     title: "Assign the right module",
     body: "Commandants and training officers push curriculum to individual officers, squads, or whole precincts in a click.",
   },
   {
     step: "Step 02",
-    Icon: VideoConference,
+    Icon: VideoCameraIcon,
     title: "Run live drills",
     body: "Zoom-native live sessions with attendance, watermarked playback, and automatic session recordings.",
   },
   {
     step: "Step 03",
-    Icon: ChartLineUp,
+    Icon: PresentationChartLineIcon,
     title: "Measure what matters",
     body: "Precinct-level compliance, scenario pass rates, and pending certifications by rank — every metric the IG wants.",
   },
@@ -27,7 +31,7 @@ export function HowItWorks() {
   return (
     <section
       id="platform"
-      className="relative bg-[#0A0E1A] section-pad"
+      className="relative bg-transparent section-pad"
       style={{ minHeight: 700 }}
     >
       <div className="pointer-events-none absolute inset-0 bg-grid-pattern opacity-30" />
@@ -41,7 +45,7 @@ export function HowItWorks() {
       <div className="relative mx-auto max-w-6xl">
         <div className="max-w-2xl">
           <SectionBadge className="mb-5" hindi="कार्यप्रणाली">How it works</SectionBadge>
-          <h2 className="font-display text-4xl font-medium leading-[0.95] tracking-tight text-white md:text-5xl lg:text-6xl">
+          <h2 className="text-balance font-display text-4xl font-medium leading-[0.95] tracking-tight text-white md:text-5xl lg:text-6xl">
             You lead. Saarthi trains.
           </h2>
           <p className="mt-6 max-w-xl font-body text-sm font-light leading-relaxed text-white/60 md:text-base">
@@ -69,7 +73,7 @@ export function HowItWorks() {
                 </span>
               </div>
               <div className="glass-navy-strong mt-6 flex h-11 w-11 items-center justify-center rounded-full transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110">
-                <Icon size={20} weight="regular" className="text-[#D4AF37]" />
+                <Icon className="h-5 w-5 text-[#D4AF37]" />
               </div>
               <h3 className="mt-6 font-display text-xl font-medium text-white">
                 {title}

@@ -2,7 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Play } from "@phosphor-icons/react/dist/ssr";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowUpRightIcon } from "@heroicons/react/24/outline";
+import { PlayIcon } from "@heroicons/react/24/solid";
 import { BlurText } from "@/components/ui/BlurText";
 import { Button } from "@/components/ui/Button";
 
@@ -27,19 +30,10 @@ function renderChakraFrame(ctx: CanvasRenderingContext2D, frame: number) {
 
   ctx.clearRect(0, 0, size, size);
 
-  // backdrop radial glow (intensifies as spokes light)
-  const glowT = Math.min(1, frame / IGNITE_UNTIL);
+  // backdrop halo now lives in a CSS layer (see <div ref={haloRef}>) so it can
+  // extend past the canvas bounds without hard-clipping. only the tight rim
+  // bloom below stays in-canvas.
   const bloomT = Math.max(0, (frame - IGNITE_UNTIL) / (FRAME_COUNT - 1 - IGNITE_UNTIL));
-  const glowStrength = 0.18 + glowT * 0.22 + bloomT * 0.25;
-
-  const grad = ctx.createRadialGradient(cx, cy, size * 0.1, cx, cy, size * 0.52);
-  grad.addColorStop(0, `rgba(212,175,55,${glowStrength * 0.9})`);
-  grad.addColorStop(0.4, `rgba(212,175,55,${glowStrength * 0.35})`);
-  grad.addColorStop(1, "rgba(212,175,55,0)");
-  ctx.fillStyle = grad;
-  ctx.beginPath();
-  ctx.arc(cx, cy, size * 0.52, 0, Math.PI * 2);
-  ctx.fill();
 
   // rotate whole wheel 180° across full animation
   const rotation = easeInOutSine(progress) * Math.PI;
@@ -148,8 +142,8 @@ function hexToRgb(hex: string) {
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const haloRef = useRef<HTMLDivElement>(null);
   const framesRef = useRef<HTMLCanvasElement[]>([]);
-  const tickingRef = useRef(false);
   const currentFrameRef = useRef(0);
   const [loaded, setLoaded] = useState(false);
   const [loadPct, setLoadPct] = useState(0);
@@ -223,36 +217,44 @@ export function Hero() {
 
   useEffect(() => {
     if (!loaded) return;
+    const section = sectionRef.current;
+    if (!section) return;
 
-    const onScroll = () => {
-      if (tickingRef.current) return;
-      tickingRef.current = true;
+    gsap.registerPlugin(ScrollTrigger);
 
-      requestAnimationFrame(() => {
-        tickingRef.current = false;
-        const section = sectionRef.current;
-        if (!section) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      drawFrame(FRAME_COUNT - 1);
+      setScrollProgress(1);
+      haloRef.current?.style.setProperty("--halo", "0.7");
+      return;
+    }
 
-        const rect = section.getBoundingClientRect();
-        const scrollable = section.offsetHeight - window.innerHeight;
-        const raw = -rect.top / scrollable;
-        const p = Math.max(0, Math.min(1, raw));
+    haloRef.current?.style.setProperty("--halo", "0.25");
 
+    const st = ScrollTrigger.create({
+      trigger: section,
+      start: "top top",
+      end: "bottom bottom",
+      scrub: 1,
+      invalidateOnRefresh: true,
+      onUpdate: (self) => {
+        const p = self.progress;
         setScrollProgress(p);
-
         const idx = Math.min(FRAME_COUNT - 1, Math.floor(p * FRAME_COUNT));
         if (idx !== currentFrameRef.current) drawFrame(idx);
-      });
-    };
+        // halo intensity tracks progress: 0.25 → 1.0
+        if (haloRef.current) {
+          haloRef.current.style.setProperty("--halo", (0.25 + p * 0.75).toFixed(3));
+        }
+      },
+    });
 
     const onResize = () => drawFrame(currentFrameRef.current);
-
-    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
-    onScroll();
 
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      st.kill();
       window.removeEventListener("resize", onResize);
     };
   }, [loaded]);
@@ -268,18 +270,27 @@ export function Hero() {
       style={{ height: "400vh" }}
       id="hero"
     >
-      <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden bg-[#0A0E1A]">
+      <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
         <div
           className="absolute inset-0 bg-grid-pattern opacity-[0.35]"
           aria-hidden="true"
         />
+
+        {/* unbounded chakra halo — CSS layer, extends past the canvas rect so
+            the gold bloom falls off smoothly without clipping. --halo is
+            driven from scroll progress in the ScrollTrigger onUpdate. */}
         <div
-          className="pointer-events-none absolute inset-0"
-          aria-hidden="true"
+          ref={haloRef}
+          className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
           style={{
+            width: "min(140vh, 1400px)",
+            height: "min(140vh, 1400px)",
             background:
-              "radial-gradient(circle at 50% 55%, rgba(212,175,55,0.18), transparent 60%)",
+              "radial-gradient(circle at center, rgba(212,175,55,calc(0.45 * var(--halo, 0.3))) 0%, rgba(212,175,55,calc(0.20 * var(--halo, 0.3))) 28%, rgba(212,175,55,calc(0.06 * var(--halo, 0.3))) 55%, rgba(212,175,55,0) 72%)",
+            filter: "blur(32px)",
+            willChange: "background",
           }}
+          aria-hidden="true"
         />
 
         {/* reticle corners — film/command-center chrome */}
@@ -382,10 +393,10 @@ export function Hero() {
               />
               <Button variant="primary">
                 Request a Demo
-                <ArrowUpRight weight="bold" size={16} />
+                <ArrowUpRightIcon className="h-4 w-4 stroke-[2.5]" />
               </Button>
               <Button variant="ghost">
-                <Play weight="fill" size={14} />
+                <PlayIcon className="h-3.5 w-3.5" />
                 Watch the 90-second film
               </Button>
             </motion.div>

@@ -1,15 +1,98 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AnimatedSection, AnimatedItem } from "@/components/ui/AnimatedSection";
 
-const stats = [
-  { value: "2,400+", label: "Officers onboarded in pilot", sub: "across 18 precincts" },
-  { value: "12", label: "Live scenario templates", sub: "6 more in review" },
-  { value: "180 hrs", label: "Training delivered this quarter", sub: "Q1 · 2026" },
-  { value: "94%", label: "Module completion rate", sub: "vs. 42% classroom baseline" },
+type Stat = {
+  value: string;
+  label: string;
+  sub: string;
+  target: number;
+  format: (n: number) => string;
+};
+
+const stats: Stat[] = [
+  {
+    value: "2,400+",
+    label: "Officers onboarded in pilot",
+    sub: "across 18 precincts",
+    target: 2400,
+    format: (n) => `${Math.round(n).toLocaleString("en-IN")}+`,
+  },
+  {
+    value: "12",
+    label: "Live scenario templates",
+    sub: "6 more in review",
+    target: 12,
+    format: (n) => `${Math.round(n)}`,
+  },
+  {
+    value: "180 hrs",
+    label: "Training delivered this quarter",
+    sub: "Q1 · 2026",
+    target: 180,
+    format: (n) => `${Math.round(n)} hrs`,
+  },
+  {
+    value: "94%",
+    label: "Module completion rate",
+    sub: "vs. 42% classroom baseline",
+    target: 94,
+    format: (n) => `${Math.round(n)}%`,
+  },
 ];
 
 export function Stats() {
+  const rootRef = useRef<HTMLElement>(null);
+  const valueRefs = useRef<Array<HTMLSpanElement | null>>([]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      valueRefs.current.forEach((el, i) => {
+        if (el) el.textContent = stats[i].value;
+      });
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      valueRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const stat = stats[i];
+        const obj = { n: 0 };
+        gsap.to(obj, {
+          n: stat.target,
+          duration: 1.6,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+          onUpdate: () => {
+            el.textContent = stat.format(obj.n);
+          },
+          onComplete: () => {
+            el.textContent = stat.value;
+          },
+        });
+      });
+    }, rootRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="security" className="relative bg-[#0A0E1A] section-pad">
+    <section
+      ref={rootRef}
+      id="security"
+      className="relative bg-transparent section-pad"
+    >
       <div className="pointer-events-none absolute inset-0 bg-grid-pattern opacity-20" />
       <div className="section-num">
         <span className="text-[#D4AF37]">06</span>
@@ -20,7 +103,6 @@ export function Stats() {
           as="div"
           className="glass-navy relative overflow-hidden rounded-3xl p-12 md:p-16"
         >
-          {/* slow rotating gold beam — adds premium motion to an otherwise static block */}
           <div
             className="pointer-events-none absolute -inset-1 opacity-40"
             aria-hidden="true"
@@ -48,7 +130,13 @@ export function Stats() {
                     />
                   )}
                   <p className="text-gold-gradient flex h-16 items-center whitespace-nowrap font-display text-5xl font-medium leading-none tabular-nums tracking-tight md:h-20 md:text-6xl">
-                    {value}
+                    <span
+                      ref={(el) => {
+                        valueRefs.current[i] = el;
+                      }}
+                    >
+                      {value}
+                    </span>
                   </p>
                   <p className="mt-5 flex h-8 items-start font-mono text-xs uppercase tracking-[0.2em] text-white/60">
                     {label}

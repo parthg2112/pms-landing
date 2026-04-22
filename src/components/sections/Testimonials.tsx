@@ -27,7 +27,7 @@ const quotes = [
 
 export function Testimonials() {
   return (
-    <section className="relative bg-[#0A0E1A] section-pad">
+    <section className="relative bg-transparent section-pad">
       <div className="section-num">
         <span className="text-[#D4AF37]">08</span>
         <span className="text-white/20"> / 09</span>
@@ -35,7 +35,7 @@ export function Testimonials() {
       <div className="relative mx-auto max-w-6xl">
         <div className="max-w-2xl">
           <SectionBadge className="mb-5" hindi="मैदान से">From the field</SectionBadge>
-          <h2 className="font-display text-4xl font-medium leading-[0.95] tracking-tight text-white md:text-5xl lg:text-6xl">
+          <h2 className="text-balance font-display text-4xl font-medium leading-[0.95] tracking-tight text-white md:text-5xl lg:text-6xl">
             What commandants are saying.
           </h2>
         </div>

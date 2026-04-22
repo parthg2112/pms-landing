@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SectionBadge } from "@/components/ui/SectionBadge";
-import { BookOpen, CheckCircle } from "@phosphor-icons/react/dist/ssr";
+import { BookOpenIcon } from "@heroicons/react/24/outline";
+import { CheckCircleIcon } from "@heroicons/react/24/solid";
 
 const en = {
   courseTitle: "De-escalation Fundamentals",
@@ -37,7 +38,7 @@ function CoursePanel({ data, lang }: { data: typeof en; lang: Lang }) {
     <div className="glass-navy card-hover rounded-2xl p-7">
       <div className="flex items-center justify-between">
         <div className="glass-navy-strong flex h-9 w-9 items-center justify-center rounded-full">
-          <BookOpen size={16} weight="regular" className="text-[#D4AF37]" />
+          <BookOpenIcon className="h-4 w-4 text-[#D4AF37]" />
         </div>
         <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-white/40">
           {lang.toUpperCase()}
@@ -56,7 +57,7 @@ function CoursePanel({ data, lang }: { data: typeof en; lang: Lang }) {
           <div key={i}>
             <div className="flex items-center justify-between">
               <span className={`${bodyFont} text-sm ${m.done ? "text-white/90" : "text-white/70"} flex items-center gap-2`}>
-                {m.done && <CheckCircle size={14} weight="fill" className="text-[#D4AF37]" />}
+                {m.done && <CheckCircleIcon className="h-[14px] w-[14px] text-[#D4AF37]" />}
                 {m.name}
               </span>
               <span className="font-mono text-[10px] tracking-[0.2em] text-white/50">
@@ -91,7 +92,7 @@ export function Bilingual() {
   const [lang, setLang] = useState<Lang>("en");
 
   return (
-    <section id="bilingual" className="relative bg-[#0A0E1A] section-pad">
+    <section id="bilingual" className="relative bg-transparent section-pad">
       <div className="section-num">
         <span className="text-[#D4AF37]">07</span>
         <span className="text-white/20"> / 09</span>

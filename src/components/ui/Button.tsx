@@ -9,7 +9,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const base =
-  "inline-flex items-center gap-2 rounded-full px-6 py-3 font-display font-medium text-sm transition-colors duration-300 whitespace-nowrap";
+  "inline-flex items-center gap-2 rounded-full px-6 py-3 font-display font-medium text-sm whitespace-nowrap transition-[color,background-color,border-color,box-shadow,transform] duration-300 active:scale-[0.97] active:duration-150 will-change-transform";
 
 const variants: Record<Variant, string> = {
   primary:

@@ -8,6 +8,7 @@ import { Stats } from "@/components/sections/Stats";
 import { Bilingual } from "@/components/sections/Bilingual";
 import { Testimonials } from "@/components/sections/Testimonials";
 import { CTAFooter } from "@/components/sections/CTAFooter";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
       <Bilingual />
       <Testimonials />
       <CTAFooter />
+      <ScrollProgress />
     </>
   );
 }
