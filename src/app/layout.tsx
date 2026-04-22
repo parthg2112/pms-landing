@@ -51,15 +51,34 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${spaceGrotesk.variable} ${inter.variable} ${notoHindi.variable} ${spaceMono.variable}`}
     >
       <body className="font-body text-white antialiased">
-        {/* Sitewide backdrop: navy base + single gold radial, viewport-centered.
-            Fixed so it stays anchored to the viewport as the user scrolls —
-            one uniform gradient across the entire site, no competing layers. */}
-        <div className="fixed inset-0 -z-10 bg-[#0E1628]" aria-hidden="true">
+        {/* Sitewide backdrop — gold-aurora + subtle diagonal hatch.
+            Fixed so it stays anchored to the viewport as the user scrolls.
+            Two layers: (1) cosmic aurora (radials + inset edge-glows +
+            soft-light blend) gives the page warmth and cinematic framing;
+            (2) faint gold crosshatch adds fine grain so the backdrop
+            doesn't read as dead space. */}
+        <div className="fixed inset-0 -z-10 bg-[#16213d]" aria-hidden="true">
+          {/* gold-aurora wash — edge-only, very subtle. Navy base + two
+              narrow inset side-glows that die off well before center. */}
           <div
             className="absolute inset-0"
             style={{
-              backgroundImage:
-                "radial-gradient(circle 1200px at 50% 50%, rgba(212,175,55,0.32), transparent 70%)",
+              background: "linear-gradient(to bottom, #1a2747 0%, #16213d 100%)",
+              boxShadow: [
+                "inset 80px 0 120px -40px rgba(212,175,55,0.05)",
+                "inset -80px 0 120px -40px rgba(212,175,55,0.05)",
+              ].join(", "),
+            }}
+          />
+          {/* diagonal gold crosshatch — barely-there texture */}
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: [
+                "repeating-linear-gradient(45deg, rgba(212,175,55,0.03) 0, rgba(212,175,55,0.03) 1px, transparent 1px, transparent 22px)",
+                "repeating-linear-gradient(-45deg, rgba(212,175,55,0.02) 0, rgba(212,175,55,0.02) 1px, transparent 1px, transparent 22px)",
+              ].join(", "),
+              backgroundSize: "44px 44px",
             }}
           />
         </div>

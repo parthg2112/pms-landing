@@ -14,6 +14,9 @@ export interface SpotlightNavbarProps {
     className?: string;
     onItemClick?: (item: NavItem, index: number) => void;
     defaultActiveIndex?: number;
+    /** Controlled active index. When provided, overrides internal state — use for
+     *  scroll-spy driven highlighting. Pass -1 for "no active section". */
+    activeIndex?: number;
 }
 
 export function SpotlightNavbar({
@@ -27,26 +30,23 @@ export function SpotlightNavbar({
     className,
     onItemClick,
     defaultActiveIndex = 0,
+    activeIndex: activeIndexProp,
 }: SpotlightNavbarProps) {
     const navRef = useRef<HTMLDivElement>(null);
-    const [activeIndex, setActiveIndex] = useState(defaultActiveIndex);
+    const [internalActive, setInternalActive] = useState(defaultActiveIndex);
+    const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const [hoverX, setHoverX] = useState<number | null>(null);
-    const [isDark, setIsDark] = useState(false);
+
+    const effectiveActive = activeIndexProp ?? internalActive;
+    // Hover wins over scroll/click; -1 means "no target, fade underline out".
+    const target = hoveredIndex !== null ? hoveredIndex : effectiveActive;
+    const hasTarget = target >= 0;
 
     // Refs for the "light" positions so we can animate them imperatively
     const spotlightX = useRef(0);
     const ambienceX = useRef(0);
 
-    useEffect(() => {
-        const checkTheme = () => {
-            setIsDark(document.documentElement.classList.contains('dark'));
-        };
-        checkTheme();
-        const observer = new MutationObserver(checkTheme);
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-        return () => observer.disconnect();
-    }, []);
-
+    // Spotlight (cursor-following top glow)
     useEffect(() => {
         if (!navRef.current) return;
         const nav = navRef.current;
@@ -55,15 +55,15 @@ export function SpotlightNavbar({
             const rect = nav.getBoundingClientRect();
             const x = e.clientX - rect.left;
             setHoverX(x);
-            // Direct update for immediate feedback (no spring for the mouse itself, feels snappier)
             spotlightX.current = x;
             nav.style.setProperty("--spotlight-x", `${x}px`);
         };
 
         const handleMouseLeave = () => {
             setHoverX(null);
-            // When mouse leaves, spring the spotlight back to the active item
-            const activeItem = nav.querySelector(`[data-index="${activeIndex}"]`);
+            setHoveredIndex(null);
+            if (effectiveActive < 0) return;
+            const activeItem = nav.querySelector(`[data-index="${effectiveActive}"]`);
             if (activeItem) {
                 const navRect = nav.getBoundingClientRect();
                 const itemRect = activeItem.getBoundingClientRect();
@@ -88,33 +88,34 @@ export function SpotlightNavbar({
             nav.removeEventListener("mousemove", handleMouseMove);
             nav.removeEventListener("mouseleave", handleMouseLeave);
         };
-    }, [activeIndex]);
+    }, [effectiveActive]);
 
-    // Handle the "Ambience" (Active Item) Movement
+    // Ambience underline — tracks hovered item first, scroll/click active second
     useEffect(() => {
         if (!navRef.current) return;
+        if (target < 0) return;
         const nav = navRef.current;
-        const activeItem = nav.querySelector(`[data-index="${activeIndex}"]`);
+        const el = nav.querySelector(`[data-index="${target}"]`);
+        if (!el) return;
 
-        if (activeItem) {
-            const navRect = nav.getBoundingClientRect();
-            const itemRect = activeItem.getBoundingClientRect();
-            const targetX = itemRect.left - navRect.left + itemRect.width / 2;
+        const navRect = nav.getBoundingClientRect();
+        const itemRect = el.getBoundingClientRect();
+        const targetX = itemRect.left - navRect.left + itemRect.width / 2;
 
-            animate(ambienceX.current, targetX, {
-                type: "spring",
-                stiffness: 200,
-                damping: 20,
-                onUpdate: (v) => {
-                    ambienceX.current = v;
-                    nav.style.setProperty("--ambience-x", `${v}px`);
-                },
-            });
-        }
-    }, [activeIndex]);
+        const controls = animate(ambienceX.current, targetX, {
+            type: "spring",
+            stiffness: 260,
+            damping: 26,
+            onUpdate: (v) => {
+                ambienceX.current = v;
+                nav.style.setProperty("--ambience-x", `${v}px`);
+            },
+        });
+        return () => controls.stop();
+    }, [target]);
 
     const handleItemClick = (item: NavItem, index: number) => {
-        setActiveIndex(index);
+        if (activeIndexProp === undefined) setInternalActive(index);
         onItemClick?.(item, index);
     };
 
@@ -123,8 +124,8 @@ export function SpotlightNavbar({
             <nav
                 ref={navRef}
                 className={cn(
-                    "spotlight-nav spotlight-nav-bg glass-border spotlight-nav-shadow",
-                    "relative h-11 rounded-full transition-all duration-300 overflow-hidden"
+                    "spotlight-nav glass-navy-premium",
+                    "relative h-11 rounded-full overflow-hidden"
                 )}
             >
                 {/* Content */}
@@ -134,15 +135,18 @@ export function SpotlightNavbar({
                             <a
                                 href={item.href}
                                 data-index={idx}
+                                onMouseEnter={() => setHoveredIndex(idx)}
+                                onFocus={() => setHoveredIndex(idx)}
+                                onBlur={() => setHoveredIndex((h) => (h === idx ? null : h))}
                                 onClick={(e) => {
                                     e.preventDefault();
                                     handleItemClick(item, idx);
                                 }}
                                 className={cn(
                                     "px-4 py-1.5 font-display text-sm font-medium transition-colors duration-200 rounded-full",
-                                    activeIndex === idx
+                                    hoveredIndex === idx || (hoveredIndex === null && effectiveActive === idx)
                                         ? "text-[#D4AF37]"
-                                        : "text-white/75 hover:text-white"
+                                        : "text-white/75"
                                 )}
                             >
                                 {item.label}
@@ -170,14 +174,15 @@ export function SpotlightNavbar({
                     }}
                 />
 
-                {/* 2. The Active State Ambience (Stays on Active) */}
+                {/* 2. The Active/Hover Ambience (underline — tracks hover, then scroll/click) */}
                 <div
-                    className="pointer-events-none absolute bottom-0 left-0 w-full h-[2px] z-[2]"
+                    className="pointer-events-none absolute bottom-0 left-0 w-full h-[2px] z-[2] transition-opacity duration-200"
                     style={{
+                        opacity: hasTarget ? 1 : 0,
                         background: `
                   radial-gradient(
-                    60px circle at var(--ambience-x) 0%, 
-                    var(--ambience-color, rgba(0,0,0,1)) 0%, 
+                    60px circle at var(--ambience-x) 0%,
+                    var(--ambience-color, rgba(0,0,0,1)) 0%,
                     transparent 100%
                   )
                 `

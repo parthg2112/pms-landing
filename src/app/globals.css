@@ -14,6 +14,9 @@
   --font-mono: var(--font-space-mono), "Space Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --radius: 12px;
+  --radius-xl: 18px;
+  --radius-2xl: 28px;
+  --radius-3xl: 36px;
 }
 
 :root {
@@ -31,15 +34,23 @@
   --ease-cinema: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* html carries the navy fallback so the -z-10 backdrop div in layout.tsx
+   can paint over it. body must stay transparent — otherwise its background
+   would occlude the fixed backdrop (aurora + hatch) entirely. */
+html {
+  background: #16213d;
+}
 html,
 body {
-  background: #0E1628;
   color: #ffffff;
   font-family: var(--font-body);
   font-weight: 300;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: auto;
+}
+body {
+  background: transparent;
 }
 
 ::selection {
@@ -57,11 +68,21 @@ body {
 @layer components {
   .glass-navy {
     position: relative;
-    background: rgba(30, 58, 95, 0.15);
-    backdrop-filter: blur(12px) saturate(1.2);
-    -webkit-backdrop-filter: blur(12px) saturate(1.2);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    background:
+      linear-gradient(
+        140deg,
+        rgba(255, 255, 255, 0.08),
+        rgba(255, 255, 255, 0.02) 40%,
+        rgba(255, 255, 255, 0.05) 100%
+      ),
+      rgba(38, 62, 100, 0.18);
+    backdrop-filter: blur(28px) saturate(1.8);
+    -webkit-backdrop-filter: blur(28px) saturate(1.8);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.14),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.03),
+      0 10px 40px -18px rgba(0, 0, 0, 0.45);
     overflow: hidden;
     isolation: isolate;
   }
@@ -88,13 +109,21 @@ body {
 
   .glass-navy-strong {
     position: relative;
-    background: rgba(30, 58, 95, 0.25);
-    backdrop-filter: blur(40px) saturate(1.4);
-    -webkit-backdrop-filter: blur(40px) saturate(1.4);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background:
+      linear-gradient(
+        140deg,
+        rgba(255, 255, 255, 0.12),
+        rgba(255, 255, 255, 0.03) 45%,
+        rgba(255, 255, 255, 0.08) 100%
+      ),
+      rgba(38, 62, 100, 0.28);
+    backdrop-filter: blur(48px) saturate(2);
+    -webkit-backdrop-filter: blur(48px) saturate(2);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      0 20px 50px -20px rgba(0, 0, 0, 0.6);
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+      0 24px 60px -22px rgba(0, 0, 0, 0.55);
     overflow: hidden;
     isolation: isolate;
   }
@@ -103,12 +132,18 @@ body {
   .surface-navy {
     position: relative;
     background:
-      linear-gradient(145deg, rgba(212, 175, 55, 0.05), rgba(10, 14, 26, 0) 40%),
-      linear-gradient(to bottom, #141f33 0%, #0e1624 100%);
-    border: 1px solid rgba(255, 255, 255, 0.09);
+      linear-gradient(
+        145deg,
+        rgba(212, 175, 55, 0.06),
+        rgba(255, 255, 255, 0.02) 35%,
+        rgba(22, 33, 61, 0) 55%
+      ),
+      linear-gradient(to bottom, #1c2a47 0%, #131e35 100%);
+    border: 1px solid rgba(255, 255, 255, 0.11);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.06),
-      0 28px 60px -20px rgba(0, 0, 0, 0.7);
+      inset 0 1px 0 rgba(255, 255, 255, 0.10),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.03),
+      0 32px 70px -22px rgba(0, 0, 0, 0.6);
     overflow: hidden;
     isolation: isolate;
   }
@@ -133,6 +168,73 @@ body {
     pointer-events: none;
   }
 
+  /* glass-navy-premium — top-tier glass for conversion CTAs only
+     (nav pill, Officer Sign-in, Request a Demo). Max blur, max saturation,
+     brighter inner highlight, pronounced gold hairline border, deep drop
+     shadow plus an ambient gold outer glow so the element visibly floats. */
+  .glass-navy-premium {
+    position: relative;
+    background:
+      linear-gradient(
+        140deg,
+        rgba(255, 255, 255, 0.16),
+        rgba(255, 255, 255, 0.04) 45%,
+        rgba(255, 255, 255, 0.12) 100%
+      ),
+      rgba(38, 62, 100, 0.32);
+    backdrop-filter: blur(56px) saturate(2.2);
+    -webkit-backdrop-filter: blur(56px) saturate(2.2);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.28),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+      0 0 0 1px rgba(212, 175, 55, 0.18),
+      0 30px 70px -20px rgba(0, 0, 0, 0.7),
+      0 0 56px -10px rgba(212, 175, 55, 0.28);
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      box-shadow 0.4s var(--ease-cinema),
+      transform 0.4s var(--ease-cinema);
+  }
+
+  .glass-navy-premium:hover {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.34),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+      0 0 0 1px rgba(212, 175, 55, 0.45),
+      0 36px 90px -20px rgba(0, 0, 0, 0.78),
+      0 0 80px -10px rgba(212, 175, 55, 0.45);
+  }
+
+  .glass-navy-premium::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(212, 175, 55, 0.75) 0%,
+      rgba(255, 255, 255, 0.25) 25%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0.25) 75%,
+      rgba(212, 175, 55, 0.65) 100%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .glass-navy-premium {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      background: linear-gradient(to bottom, #22314f, #16213d);
+    }
+  }
+
   .glass-navy-strong::before {
     content: "";
     position: absolute;
@@ -154,7 +256,7 @@ body {
   }
 
   .bg-grid-pattern {
-    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
     background-size: 28px 28px;
   }
 
@@ -177,12 +279,12 @@ body {
   }
 
   .card-hover:hover {
-    transform: translateY(-4px);
+    transform: translateY(-6px);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.08),
-      0 0 0 1px rgba(212, 175, 55, 0.25),
-      0 30px 80px -24px rgba(0, 0, 0, 0.8),
-      0 0 60px -12px rgba(212, 175, 55, 0.15);
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      0 0 0 1px rgba(212, 175, 55, 0.3),
+      0 40px 90px -24px rgba(0, 0, 0, 0.75),
+      0 0 80px -12px rgba(212, 175, 55, 0.22);
   }
 
   /* reticle corner mark — hero chrome */
@@ -464,6 +566,15 @@ body {
 
 .animate-in-up {
   animation: in-up 0.8s var(--ease-cinema) both;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass-navy,
+  .glass-navy-strong {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: linear-gradient(to bottom, #1c2a47, #131e35);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

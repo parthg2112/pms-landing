@@ -72,7 +72,7 @@ const CardFrame: React.FC<CardProps> = ({ item, index, total }) => {
       >
         {/* gold hairline border — matches .glass-navy family */}
         <div
-          className="pointer-events-none absolute -inset-px rounded-[26px]"
+          className="pointer-events-none absolute -inset-px rounded-[32px]"
           style={{
             padding: "1px",
             background:
@@ -86,7 +86,7 @@ const CardFrame: React.FC<CardProps> = ({ item, index, total }) => {
         />
 
         <div
-          className="relative overflow-hidden rounded-[24px] p-10 md:p-14"
+          className="relative overflow-hidden rounded-[30px] p-10 md:p-14"
           style={{
             background:
               "linear-gradient(145deg, rgba(20,31,51,0.78), rgba(10,14,26,0.92))",

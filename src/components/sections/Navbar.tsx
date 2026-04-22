@@ -17,12 +17,37 @@ const nav: NavItem[] = [
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // scroll-spy: drive the underline to whichever nav-target section
+  // currently overlaps the viewport's upper band.
+  useEffect(() => {
+    const ids = nav.map((item) => item.href.replace("#", ""));
+    const sections = ids
+      .map((id) => document.getElementById(id))
+      .filter((el): el is HTMLElement => el !== null);
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            const idx = ids.indexOf((entry.target as HTMLElement).id);
+            if (idx !== -1) setActiveIndex(idx);
+          }
+        }
+      },
+      { rootMargin: "-30% 0px -65% 0px", threshold: 0 }
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
   }, []);
 
   const handleNavClick = (item: NavItem) => {
@@ -48,7 +73,7 @@ export function Navbar() {
       <div className={`hidden md:block transition-transform duration-500 ${scrolled ? "scale-[0.98]" : ""}`}>
         <SpotlightNavbar
           items={nav}
-          defaultActiveIndex={-1}
+          activeIndex={activeIndex}
           onItemClick={handleNavClick}
           className="pt-0"
         />
@@ -60,7 +85,7 @@ export function Navbar() {
           href="https://police.risetechnosoft.com/login"
           target="_blank"
           rel="noopener noreferrer"
-          className="beam-ring glass-navy hidden items-center gap-2 rounded-full px-5 py-2.5 font-display text-sm font-medium text-white transition-colors hover:text-[#D4AF37] md:inline-flex"
+          className="beam-ring glass-navy-premium hidden items-center gap-2 rounded-full px-5 py-2.5 font-display text-sm font-medium text-white transition-colors hover:text-[#D4AF37] md:inline-flex"
         >
           Officer Sign-in
           <ArrowRightIcon className="h-3.5 w-3.5 stroke-[2.5]" />
