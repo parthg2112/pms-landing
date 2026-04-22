@@ -139,15 +139,48 @@ function hexToRgb(hex: string) {
   };
 }
 
+// A headline/body half that stays intact as a word chunk but translates
+// outward on scroll, driven by the parent's --split CSS variable (0→1).
+// Max travel is capped so the half doesn't slide off-screen on small viewports.
+function SplitHalf({
+  side,
+  delay,
+  children,
+}: {
+  side: "left" | "right";
+  delay: number;
+  children: React.ReactNode;
+}) {
+  const sign = side === "left" ? -1 : 1;
+  return (
+    <span
+      className="inline-block whitespace-nowrap"
+      style={{
+        transform: `translateX(calc(var(--split, 0) * ${sign} * min(46vw, 440px)))`,
+        willChange: "transform",
+      }}
+    >
+      <motion.span
+        initial={{ opacity: 0, filter: "blur(10px)", y: 14 }}
+        animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+        transition={{ delay, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+        className="inline-block"
+      >
+        {children}
+      </motion.span>
+    </span>
+  );
+}
+
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const haloRef = useRef<HTMLDivElement>(null);
+  const splitRef = useRef<HTMLDivElement>(null);
   const framesRef = useRef<HTMLCanvasElement[]>([]);
   const currentFrameRef = useRef(0);
   const [loaded, setLoaded] = useState(false);
   const [loadPct, setLoadPct] = useState(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
 
   // pre-render all 120 chakra frames to offscreen canvases
   useEffect(() => {
@@ -225,12 +258,13 @@ export function Hero() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduce) {
       drawFrame(FRAME_COUNT - 1);
-      setScrollProgress(1);
       haloRef.current?.style.setProperty("--halo", "0.7");
+      splitRef.current?.style.setProperty("--split", "1");
       return;
     }
 
     haloRef.current?.style.setProperty("--halo", "0.25");
+    splitRef.current?.style.setProperty("--split", "0");
 
     const st = ScrollTrigger.create({
       trigger: section,
@@ -240,12 +274,15 @@ export function Hero() {
       invalidateOnRefresh: true,
       onUpdate: (self) => {
         const p = self.progress;
-        setScrollProgress(p);
         const idx = Math.min(FRAME_COUNT - 1, Math.floor(p * FRAME_COUNT));
         if (idx !== currentFrameRef.current) drawFrame(idx);
         // halo intensity tracks progress: 0.25 → 1.0
         if (haloRef.current) {
           haloRef.current.style.setProperty("--halo", (0.25 + p * 0.75).toFixed(3));
+        }
+        // headline halves translate outward as scroll advances
+        if (splitRef.current) {
+          splitRef.current.style.setProperty("--split", p.toFixed(3));
         }
       },
     });
@@ -258,10 +295,6 @@ export function Hero() {
       window.removeEventListener("resize", onResize);
     };
   }, [loaded]);
-
-  // bottom stat pills come in at progress > 0.7
-  const showStats = scrollProgress > 0.62;
-  const fadeTop = Math.max(0, 1 - Math.max(0, (scrollProgress - 0.45) / 0.25));
 
   return (
     <section
@@ -311,7 +344,7 @@ export function Hero() {
         {/* chakra canvas */}
         <canvas
           ref={canvasRef}
-          className="relative h-[min(90vh,900px)] w-[min(90vh,900px)]"
+          className="relative h-[min(66vh,680px)] w-[min(66vh,680px)]"
           aria-hidden="true"
         />
 
@@ -330,10 +363,13 @@ export function Hero() {
           </div>
         )}
 
-        {/* top overlay — headline + CTA */}
+        {/* top overlay — each line is split at a natural word/cluster
+            boundary; halves translate outward as --split (driven by scroll)
+            grows from 0 → 1. Words themselves stay intact. */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 z-20 flex justify-center px-6 pt-[min(18vh,160px)]"
-          style={{ opacity: fadeTop }}
+          ref={splitRef}
+          className="pointer-events-none absolute inset-x-0 top-0 z-20 px-6 pt-[min(18vh,160px)]"
+          style={{ ["--split" as string]: "0" }}
         >
           <div className="pointer-events-auto mx-auto max-w-4xl text-center">
             <motion.div
@@ -349,92 +385,54 @@ export function Hero() {
               </div>
             </motion.div>
 
-            <BlurText
-              as="h1"
-              text="सारथी"
-              className="font-hindi text-6xl md:text-8xl lg:text-[8.5rem] font-medium tracking-tight leading-[0.9] text-[#D4AF37]"
-              delay={0.1}
-              perWord={0.08}
-            />
-            <BlurText
-              as="h2"
-              text="Training that guides."
-              className="mt-2 font-display text-4xl md:text-6xl lg:text-7xl font-medium tracking-[-0.02em] leading-[0.9] text-white"
-              delay={0.5}
-              perWord={0.12}
-            />
+            <h1 className="flex justify-center font-hindi text-6xl md:text-8xl lg:text-[8.5rem] font-medium tracking-tight leading-[0.9] text-[#D4AF37]">
+              <SplitHalf side="left" delay={0.1}>सार</SplitHalf>
+              <SplitHalf side="right" delay={0.22}>थी</SplitHalf>
+            </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{ delay: 1.0, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="mx-auto mt-8 max-w-xl font-body text-sm font-light text-white/60 md:text-base lg:text-lg"
-            >
-              The modern training platform for India&apos;s uniformed services.
-              Live sessions, scenario simulators, and compliance analytics — in
-              one command center.
-            </motion.p>
+            <h2 className="mt-2 flex justify-center font-display text-4xl md:text-6xl lg:text-7xl font-medium tracking-[-0.02em] leading-[0.9] text-white">
+              <SplitHalf side="left" delay={0.5}>Operations</SplitHalf>
+              <SplitHalf side="right" delay={0.66}>&nbsp;that guide.</SplitHalf>
+            </h2>
 
-            <motion.div
-              initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
-              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-              transition={{ delay: 1.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="relative mt-9 flex flex-wrap items-center justify-center gap-3"
-            >
-              {/* scrim — darkens chakra center so CTAs stay legible */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-28 w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full"
-                style={{
-                  background:
-                    "radial-gradient(ellipse at center, rgba(10,14,26,0.92) 0%, rgba(10,14,26,0.7) 45%, transparent 75%)",
-                  filter: "blur(8px)",
-                }}
-              />
-              <Button variant="primary">
-                Request a Demo
-                <ArrowUpRightIcon className="h-4 w-4 stroke-[2.5]" />
-              </Button>
-              <Button variant="ghost">
-                <PlayIcon className="h-3.5 w-3.5" />
-                Watch the 90-second film
-              </Button>
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.6, duration: 0.8 }}
-              className="mt-8 font-mono text-[10px] uppercase tracking-[0.3em] text-white/40"
-            >
-              Built in India · Hindi + English · On-prem ready
-            </motion.p>
+            <p className="mx-auto mt-6 flex max-w-md justify-center font-body text-sm font-light text-white/60 md:text-base">
+              <SplitHalf side="left" delay={1.0}>Duty, learning, and compliance</SplitHalf>
+              <SplitHalf side="right" delay={1.12}>&nbsp;— in one command deck.</SplitHalf>
+            </p>
           </div>
         </div>
 
-        {/* bottom stats that appear as chakra completes */}
+        {/* bottom CTA zone — sits cleanly below the chakra and stays visible
+            through the whole hero scroll; no fade. */}
         <div
-          className={`pointer-events-none absolute inset-x-0 bottom-[min(12vh,120px)] z-20 flex justify-center px-6 transition-all duration-700 ${
-            showStats ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
-          }`}
+          className="pointer-events-none absolute inset-x-0 bottom-[min(16vh,160px)] z-20 flex flex-col items-center gap-5 px-6"
         >
-          <div className="pointer-events-auto flex flex-wrap justify-center gap-3">
-            {[
-              "24 dharma spokes",
-              "12 live scenarios",
-              "6 languages soon",
-              "100% on-prem option",
-            ].map((s, i) => (
-              <div
-                key={s}
-                className="glass-navy rounded-full px-4 py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-white/70 transition-all"
-                style={{ transitionDelay: showStats ? `${i * 80}ms` : "0ms" }}
-              >
-                {s}
-              </div>
-            ))}
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 14, filter: "blur(6px)" }}
+            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            transition={{ delay: 1.3, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="pointer-events-auto flex flex-wrap items-center justify-center gap-3"
+          >
+            <Button variant="primary">
+              Request a Demo
+              <ArrowUpRightIcon className="h-4 w-4 stroke-[2.5]" />
+            </Button>
+            <Button variant="ghost">
+              <PlayIcon className="h-3.5 w-3.5" />
+              Watch the 90-second film
+            </Button>
+          </motion.div>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.6, duration: 0.8 }}
+            className="font-mono text-[10px] uppercase tracking-[0.3em] text-white/40"
+          >
+            Built in India · Hindi + English · On-prem
+          </motion.p>
         </div>
+
       </div>
     </section>
   );

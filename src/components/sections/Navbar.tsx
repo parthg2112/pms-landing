@@ -8,8 +8,8 @@ import { SpotlightNavbar, type NavItem } from "@/components/ui/spotlight-navbar"
 
 const nav: NavItem[] = [
   { label: "Platform", href: "#platform" },
-  { label: "Scenarios", href: "#scenarios" },
-  { label: "Departments", href: "#features" },
+  { label: "Drills", href: "#scenarios" },
+  { label: "Modules", href: "#features" },
   { label: "Security", href: "#security" },
   { label: "Contact", href: "#contact" },
 ];

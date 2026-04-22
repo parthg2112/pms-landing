@@ -6,7 +6,7 @@
   --color-elevated: hsl(215 40% 18%);
   --color-foreground: #ffffff;
   --color-primary: #d4af37;
-  --color-primary-foreground: #0a0e1a;
+  --color-primary-foreground: #0E1628;
 
   --font-display: var(--font-space-grotesk), "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-inter), "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -33,7 +33,7 @@
 
 html,
 body {
-  background: #0a0e1a;
+  background: #0E1628;
   color: #ffffff;
   font-family: var(--font-body);
   font-weight: 300;
@@ -220,7 +220,7 @@ body {
     height: 10px;
     transform: translate(-50%, -50%) rotate(45deg);
     border: 1px solid rgba(212, 175, 55, 0.5);
-    background: #0a0e1a;
+    background: #0E1628;
   }
 
   /* section-number marker */
@@ -393,7 +393,7 @@ body {
 :where(a, button, [role="button"]):focus-visible {
   outline: none;
   box-shadow:
-    0 0 0 2px #0a0e1a,
+    0 0 0 2px #0E1628,
     0 0 0 4px rgba(212, 175, 55, 0.6);
   border-radius: 999px;
   transition: box-shadow 160ms var(--ease-cinema);

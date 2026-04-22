@@ -16,21 +16,21 @@ type Stat = {
 const stats: Stat[] = [
   {
     value: "2,400+",
-    label: "Officers onboarded in pilot",
+    label: "Officers on active roster",
     sub: "across 18 precincts",
     target: 2400,
     format: (n) => `${Math.round(n).toLocaleString("en-IN")}+`,
   },
   {
     value: "12",
-    label: "Live scenario templates",
+    label: "Drill templates live",
     sub: "6 more in review",
     target: 12,
     format: (n) => `${Math.round(n)}`,
   },
   {
     value: "180 hrs",
-    label: "Training delivered this quarter",
+    label: "Learning delivered this quarter",
     sub: "Q1 · 2026",
     target: 180,
     format: (n) => `${Math.round(n)} hrs`,

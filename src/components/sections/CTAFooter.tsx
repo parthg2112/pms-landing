@@ -53,7 +53,7 @@ export function CTAFooter() {
     <section
       id="contact"
       className="relative overflow-hidden bg-transparent"
-      style={{ minHeight: 600 }}
+      style={{ minHeight: 760 }}
     >
       <div className="section-num">
         <span className="text-[#D4AF37]">09</span>
@@ -254,16 +254,16 @@ export function CTAFooter() {
           Ready to serve?
         </p>
         <h2 className="mt-5 text-balance font-display text-5xl font-medium leading-[0.95] tracking-tight text-white md:text-6xl lg:text-7xl">
-          Your next training cycle
+          Your command deck
           <br />
           starts here.
         </h2>
         <p className="mx-auto mt-6 max-w-xl font-body text-sm font-light leading-relaxed text-white/60 md:text-base">
-          Book a 30-minute demo. We&apos;ll show you Saarthi running live —
-          with your department&apos;s modules loaded in before the call.
+          Book a 30-minute demo. We&apos;ll load your department&apos;s rosters
+          and modules before the call.
         </p>
 
-        <div className="mt-40 flex flex-wrap items-center justify-center gap-3">
+        <div className="mt-56 flex flex-wrap items-center justify-center gap-3">
           <Button variant="primary">
             Request a demo
             <ArrowUpRightIcon className="h-4 w-4 stroke-[2.5]" />

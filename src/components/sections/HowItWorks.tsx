@@ -10,20 +10,20 @@ const steps = [
   {
     step: "Step 01",
     Icon: ClipboardDocumentListIcon,
-    title: "Assign the right module",
-    body: "Commandants and training officers push curriculum to individual officers, squads, or whole precincts in a click.",
+    title: "Assign duty and modules",
+    body: "Push rosters, case assignments, and learning modules to officers or precincts in one click.",
   },
   {
     step: "Step 02",
     Icon: VideoCameraIcon,
-    title: "Run live drills",
-    body: "Zoom-native live sessions with attendance, watermarked playback, and automatic session recordings.",
+    title: "Run the day",
+    body: "Live briefings and drills with attendance, watermarked playback, and auto-recorded sessions.",
   },
   {
     step: "Step 03",
     Icon: PresentationChartLineIcon,
     title: "Measure what matters",
-    body: "Precinct-level compliance, scenario pass rates, and pending certifications by rank — every metric the IG wants.",
+    body: "Precinct compliance, pending certifications by rank, and skill gaps — the view the IG needs.",
   },
 ];
 
@@ -46,12 +46,11 @@ export function HowItWorks() {
         <div className="max-w-2xl">
           <SectionBadge className="mb-5" hindi="कार्यप्रणाली">How it works</SectionBadge>
           <h2 className="text-balance font-display text-4xl font-medium leading-[0.95] tracking-tight text-white md:text-5xl lg:text-6xl">
-            You lead. Saarthi trains.
+            You lead. Saarthi runs the floor.
           </h2>
           <p className="mt-6 max-w-xl font-body text-sm font-light leading-relaxed text-white/60 md:text-base">
-            Assign modules. Schedule live drills. Let officers train at their
-            own pace — or under a trainer&apos;s eye. Track compliance to the
-            precinct.
+            Rosters, modules, and compliance — assigned, tracked, and audited
+            from one screen.
           </p>
         </div>
 

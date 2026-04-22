@@ -11,22 +11,22 @@ const features = [
   {
     Icon: ShieldCheckIcon,
     title: "Secure by default",
-    body: "On-prem deploy, air-gapped video, watermarked playback. No tenant data leaves your network.",
+    body: "On-prem deploy. Watermarked playback. No tenant data leaves your network.",
   },
   {
     Icon: LanguageIcon,
     title: "हिंदी first",
-    body: "Every screen ships in Hindi and English on day one. Regional languages on the roadmap.",
+    body: "Every screen in Hindi and English, day one. Regional languages next.",
   },
   {
     Icon: SignalSlashIcon,
     title: "Works when the net doesn't",
-    body: "Lectures cache for offline playback. Attendance syncs when you're back online.",
+    body: "Modules cache offline. Attendance and case updates sync when you're back.",
   },
   {
     Icon: ChartPieIcon,
     title: "Evidence-grade analytics",
-    body: "Precinct rollups, rank-wise completion, and a compliance dashboard the SP can read in 30 seconds.",
+    body: "Precinct rollups, rank-wise completion, SP-ready dashboards in 30 seconds.",
   },
 ];
 
@@ -42,7 +42,7 @@ export function Features() {
         <div className="max-w-2xl">
           <SectionBadge className="mb-5" hindi="क्यों सारथी">Why Saarthi</SectionBadge>
           <h2 className="text-balance font-display text-4xl font-medium leading-[0.95] tracking-tight text-white md:text-5xl lg:text-6xl">
-            Built for the realities of Indian policing.
+            Built for how Indian policing actually runs.
           </h2>
         </div>
 

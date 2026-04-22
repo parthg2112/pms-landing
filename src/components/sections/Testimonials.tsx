@@ -4,21 +4,21 @@ import { AnimatedSection, AnimatedItem } from "@/components/ui/AnimatedSection";
 const quotes = [
   {
     quote:
-      "In six weeks we moved onboarding from a classroom to a phone. Completion is up 4x — and the Commissioner can see it in one screen.",
+      "Rosters, refresher modules, compliance — all in one screen. Completion is up 4x, and the Commissioner sees it live.",
     name: "Sr. Inspector A. Deshmukh",
     role: "Mumbai Police · Pilot precinct",
     initials: "AD",
   },
   {
     quote:
-      "The scenario drills are the first tool I've seen that actually teaches de-escalation. Officers ask to do them on their off shift.",
+      "The scenario drills actually teach de-escalation. Officers run them on their off shift.",
     name: "DCP (Trg.) R. Iyer",
     role: "Training Directorate",
     initials: "RI",
   },
   {
     quote:
-      "Hindi-first, on-prem, and the analytics speak the language our IG uses. That's all three boxes checked.",
+      "Hindi-first, on-prem, and analytics in the IG's language. All three boxes, checked.",
     name: "Commandant V. Kulkarni",
     role: "State Police Academy",
     initials: "VK",

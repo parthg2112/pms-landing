@@ -11,7 +11,7 @@ const scenarios: GlassCardItem[] = [
     eyebrow: "Behavioral",
     title: "De-escalation Drill",
     description:
-      "An agitated citizen is shouting at your thana counter. Talk them down without escalating — Gemini judges tone, pace, and word choice against a de-escalation rubric.",
+      "An agitated citizen at your thana counter. Talk them down. The rubric scores tone, pace, and word choice.",
     tag: "Tier II",
   },
   {
@@ -19,7 +19,7 @@ const scenarios: GlassCardItem[] = [
     eyebrow: "Investigative",
     title: "Witness Interview",
     description:
-      "A reluctant witness. Extract a clean statement without a single leading question. The simulator flags every time you prime, paraphrase, or interrupt.",
+      "A reluctant witness. Extract a clean statement — no leading questions. Every prompt and paraphrase gets flagged.",
     tag: "Tier II",
   },
   {
@@ -27,7 +27,7 @@ const scenarios: GlassCardItem[] = [
     eyebrow: "Legal",
     title: "BNSS Procedural Quiz",
     description:
-      "A senior IO cross-examines you on section citations during a case-file review. Miss an amendment and the scenario escalates to a Court-review branch.",
+      "A senior IO cross-examines you on section citations. Miss an amendment and the scenario escalates to a court review.",
     tag: "Tier III",
   },
   {
@@ -35,7 +35,7 @@ const scenarios: GlassCardItem[] = [
     eyebrow: "Communications",
     title: "Media Briefing",
     description:
-      "A hostile journalist wants a quote on a sub-judice matter. Hold the line — officers learn what stays on record, what's privileged, and what needs DCP sign-off.",
+      "A hostile journalist pushes for a quote on a sub-judice matter. Hold the line — on record, privileged, or DCP sign-off.",
     tag: "Tier III",
   },
   {
@@ -43,7 +43,7 @@ const scenarios: GlassCardItem[] = [
     eyebrow: "Public Service",
     title: "Community Liaison",
     description:
-      "A resident walks in with a grievance that's more personal than procedural. Listen well. The rubric rewards empathy markers, not the shortest resolution.",
+      "A resident with a grievance that's personal, not procedural. Listen. The rubric rewards empathy, not the shortest close.",
     tag: "Tier I",
   },
   {
@@ -51,7 +51,7 @@ const scenarios: GlassCardItem[] = [
     eyebrow: "Emergency",
     title: "First Responder Triage",
     description:
-      "Multiple injured at an accident scene. Sequence the first 90 seconds — airway, bleeding, bystander control, radio-in — under live countdown pressure.",
+      "Multiple injured at an accident scene. Sequence the first 90 seconds under live countdown — airway, bleeding, radio-in.",
     tag: "Tier III",
   },
 ];
@@ -82,9 +82,8 @@ export function ScenarioStack() {
             Real drills. Without the risk.
           </h2>
           <p className="mt-6 max-w-xl font-body text-sm font-light leading-relaxed text-white/60 md:text-base">
-            Gemini-powered role-play. De-escalation at the counter. Hostile
-            reporter at a presser. BNSS procedural quiz. Officers practice what
-            policy can&apos;t teach on paper. Scroll to stack.
+            AI-powered drills for serving officers. The judgment calls policy
+            can&apos;t put on paper. Scroll to stack.
           </p>
         </div>
 
